@@ -16,7 +16,7 @@ const SAMPLE_RATE_8K = 8000;
 
 /**
  * 16K 采样率
- * 
+ *
  * @const
  * @type {number}
  */
