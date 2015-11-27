@@ -5,6 +5,7 @@
 
 'use strict';
 
+import extend from './util/extend';
 import recognize from './util/recognize';
 import {convertSampleRate, write16PCM, writeASCII} from './util/transfer';
 
@@ -37,11 +38,18 @@ function mergeBuffers(list) {
  */
 class Voice {
 
-    constructor(options = {}) {
-        this.sampleRate = options.sampleRate;
-        this.outputSampleRate = options.outputSampleRate;
-        this.token = options.token;
-        this.lang = options.lang;
+    /**
+     * 构造函数
+     *
+     * @param {Object} options 构造参数
+     * @param {number} options.sampleRate 音频采样率
+     * @param {string} options.token 语音识别 token
+     * @param {string=} options.url 语音识别 URL
+     * @param {number=} options.outputSampleRate 语音识别采样率
+     * @param {string=} options.lang 语言类别
+     */
+    constructor(options) {
+        this.config = extend({}, options);
 
         this.isOver = false;
         this.data = new Set();
@@ -72,12 +80,7 @@ class Voice {
         if (!this.recognizing) {
             this.recognizing = recognize(
                 mergeBuffers(this.data),
-                {
-                    sampleRate: this.sampleRate,
-                    outputSampleRate: this.outputSampleRate,
-                    token: this.token,
-                    lang: this.lang
-                }
+                this.config
             );
         }
 

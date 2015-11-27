@@ -6,6 +6,7 @@
 'use strict';
 
 import Voice from './src/Voice';
+import identify from './src/util/recognize';
 
 let authorization;
 let voiceList = new Set();
@@ -61,8 +62,10 @@ function gather(e) {
  * @return {Object}
  */
 function createVoice(options = {}) {
+    // 当前音频的采样率
     options.sampleRate = ctx.sampleRate;
     options.token = config.token;
+    options.url = config.url;
     let voice = new Voice(options);
     voiceList.add(voice);
     return voice;
@@ -74,10 +77,12 @@ function createVoice(options = {}) {
  * @public
  * @param {Object} options 配置参数
  * @param {string} options.token 语音识别 token
+ * @param {string=} options.url 语音识别 URL
  * @return {Promise}
  */
 export function authorize(options) {
     config.token = options.token;
+    config.url = options.url;
     if (!authorization) {
         authorization = new Promise((resolve, reject) => {
             getUserMedia.call(
@@ -98,9 +103,27 @@ export function authorize(options) {
  * 开始采集录音
  *
  * @public
- * @param {Object} options 录音参数
+ * @param {Object=} options 录音参数
+ * @param {string=} options.lang 语言种类，支持 zh(中文)、ct(粤语)、en(英文)，默认为 zh
+ * @param {number=} options.outputSampleRate 语音识别的采样率，可选 8000、16000，默认为 8000
  * @return {Object}
  */
 export function start(options) {
     return createVoice(options);
+}
+
+/**
+ * 语音识别
+ *
+ * @public
+ * @param {Float32Array} data 语音数据
+ * @param {Object} options 配置信息
+ * @param {string} options.token 语音识别 token
+ * @param {number} options.sampleRate 输入语音的采样率
+ * @param {number=} options.outputSampleRate 语音识别采样率 默认为 8000
+ * @param {string=} options.lang 语言类别，支持 zh(中文)、ct(粤语)、en(英文)，默认为 zh
+ * @return {Promise}
+ */
+export function recognize(data, options) {
+    return identify(data, options);
 }
