@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Baidu Automatic Speech Recognition</title>
+    <style>
+        #btn {
+            width: 100px;
+            height: 100px;
+            background: #000;
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            margin-left: -50px;
+            border-radius: 999px;
+        }
+    </style>
+    <script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/2-0-8/esl.js"></script>
+    <script>
+    require.config({
+        baseUrl: '../',
+        packages: [
+            {
+                name: 'basr',
+                location: './',
+                main: 'index'
+            }
+        ]
+    });
+    </script>
+</head>
+<body>
+    <div id="btn"></div>
+    <script>
+    require(['basr'], function (basr) {
+        function ready() {
+            var ele = document.getElementById('btn');
+            var voice;
+            ele.addEventListener(
+                'mousedown',
+                function (e) {
+                    voice = basr.start();
+                    e.preventDefault();
+                }
+            );
+            ele.addEventListener(
+                'mouseup',
+                function (e) {
+                    voice
+                        .end()
+                        .result()
+                        .then(
+                            function (res) {
+                                console.log(res);
+                            },
+                            function (error) {
+                                console.log(JSON.stringify(error));
+                            }
+                        );
+                    e.preventDefault();
+                }
+            );
+        }
+
+        function error() {
+            alert('如要使用语音识别，请授权语音操作');
+        }
+
+        basr
+            .authorize({token: '您的token'})
+            .then(ready, error);
+    });
+    </script>
+</body>
+</html>

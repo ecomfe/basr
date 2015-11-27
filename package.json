@@ -1,0 +1,8 @@
+{
+  "name": "basr",
+  "version": "0.1.0",
+  "description": "Baidu Automatic Speech Recognition",
+  "main": "index.js",
+  "author": "treelite <c.xinle@gmail.com>",
+  "license": "MIT"
+}
