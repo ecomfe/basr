@@ -13,6 +13,10 @@
             left: 50%;
             margin-left: -50px;
             border-radius: 999px;
+            color: #FFF;
+            text-align: center;
+            line-height: 100px;
+            cursor: pointer;
         }
     </style>
     <script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/2-0-8/esl.js"></script>
@@ -30,15 +34,25 @@
     </script>
 </head>
 <body>
-    <div id="btn"></div>
+    <h2>请打开控制台查看识别结果</h2>
+    <div id="btn">Init...</div>
     <script>
     require(['basr'], function (basr) {
         function ready() {
             var ele = document.getElementById('btn');
             var voice;
+            var TEXT_N = 'Push Me';
+            var TEXT_S = 'Listening';
+            var TEXT_X = 'Recognizing';
+            var status = 0;
+            ele.innerHTML = TEXT_N;
             ele.addEventListener(
                 'mousedown',
                 function (e) {
+                    if (status) {
+                        return;
+                    }
+                    ele.innerHTML = TEXT_S;
                     voice = basr.start();
                     e.preventDefault();
                 }
@@ -46,15 +60,23 @@
             ele.addEventListener(
                 'mouseup',
                 function (e) {
+                    status = 1;
+                    ele.innerHTML = TEXT_X;
                     voice
                         .end()
                         .result()
                         .then(
                             function (res) {
-                                console.log(res);
+                                console.log('Result: ' + res);
                             },
                             function (error) {
-                                console.log(JSON.stringify(error));
+                                console.error('Error: ' + JSON.stringify(error));
+                            }
+                        )
+                        .then(
+                            function () {
+                                status = 0;
+                                ele.innerHTML = TEXT_N;
                             }
                         );
                     e.preventDefault();
@@ -67,7 +89,12 @@
         }
 
         basr
-            .authorize({token: '您的token'})
+            .authorize(
+                {
+                    token: '您的token',
+                    url: '/server_api'
+                }
+            )
             .then(ready, error);
     });
     </script>

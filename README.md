@@ -40,6 +40,8 @@ basr
 
 ```
 
+完整的演示请参考 [demo/index.html]()。如要在本地运行 demo，请先确保已安装了 [edp](http://ecomfe.github.io/edp/)，并在 `demo/index.html` 的 94 行中填入已申请到的[百度语音 Access Token](http://yuyin.baidu.com/docs/asr/56)，然后在项目根目录下使用 `edp webserver` 命令启动本地调试服务器，访问 `http://127.0.0.1:8848/demo/index.html` 查看最终的效果
+
 ## API
 
 ### Methods
