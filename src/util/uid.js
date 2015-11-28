@@ -1,6 +1,6 @@
 /**
  * @file uid
- * @author cxl(chenxinle@baidu.com)
+ * @author treelite(c.xinle@gmail.com)
  */
 
 'use strict';
